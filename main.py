@@ -5,59 +5,40 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-import json
 import os
-import argparse
-
 import requests
-import urllib
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 import re
-import datetime
 import time
-
 urllib3.disable_warnings(InsecureRequestWarning)
-
 query = re.sub(" +","+",input(">>"))
 searchurl = f'https://duckduckgo.com/?q={query}&t=h_&iar=images&iax=images&ia=images'
 #DuckDuck Go seems to support full size image thumbnails
 #can be modified
 dirs = 'pictures' 
 maxcount = 1000
-
 chromedriver = r""#Add Path!
-
 if not os.path.exists(dirs):
     os.mkdir(dirs)
-
 def download_google_staticimages():
-
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     #options.add_argument('--headless')
-
     try:
         browser = webdriver.Chrome(chromedriver, options=options)
     except Exception as e:
         print(f'No found chromedriver in this environment.')
         print(f'Install on your machine. exception: {e}')
-        
-
     browser.set_window_size(1280, 1024)
     browser.get(searchurl)
     time.sleep(1)
-
     print(f'Getting you a lot of images. This may take a few moments...')
-
     element = browser.find_element_by_tag_name('body')
-
     # Scroll down
-    #for i in range(30):
     for i in range(50):
         element.send_keys(Keys.PAGE_DOWN)
         time.sleep(0.3)
-
     try:
         browser.find_element(By.ID,'smb').click()
         for i in range(50):
@@ -67,20 +48,16 @@ def download_google_staticimages():
         for i in range(10):
             element.send_keys(Keys.PAGE_DOWN)
             time.sleep(0.3)
-
     print(f'Reached end of page.')
     time.sleep(0.5)
     print(f'Retry')
     time.sleep(0.5)
-
     # Below is in japanese "show more result" sentences. Change this word to your lanaguage if you require.
     browser.find_element(By.XPATH,'//input[@value="Show more results"]').click()
-
     # Scroll down 2
     for i in range(50):
         element.send_keys(Keys.PAGE_DOWN)
         time.sleep(0.3)
-
     try:
         browser.find_element_by_id('smb').click()
         for i in range(50):
@@ -94,10 +71,8 @@ def download_google_staticimages():
     #elements = browser.find_elements_by_xpath('//div[@id="islrg"]')
     #page_source = elements[0].get_attribute('innerHTML')
     page_source = browser.page_source 
-
     soup = BeautifulSoup(page_source, 'lxml')
     images = soup.find_all('img')
-
     urls = []
     for image in images:
         try:
@@ -139,6 +114,5 @@ def main():
     print(f'\n')
     print(f'Download completed. [Successful count = {count}].')
     print(f'Total time is {str(total_time)} seconds.')
-
 if __name__ == '__main__':
     main()
