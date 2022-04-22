@@ -53,7 +53,8 @@ def download_google_staticimages():
     print(f'Retry')
     time.sleep(0.5)
     # Below is in japanese "show more result" sentences. Change this word to your lanaguage if you require.
-    browser.find_element(By.XPATH,'//input[@value="Show more results"]').click()
+    #browser.find_element(By.XPATH,'//input[@value="Show more results"]').click()
+    #google only
     # Scroll down 2
     for i in range(50):
         element.send_keys(Keys.PAGE_DOWN)
